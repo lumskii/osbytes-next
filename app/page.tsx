@@ -8,6 +8,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CircleArrowOutUpRight } from "lucide-react";
+import { Title } from "@/components/common/title";
+import { home } from "@/public/assets/data/dummydata";
+import Expertise from "@/components/expertise";
+import BlogCard from "@/components/blogCard";
+import Banner from "@/components/banner";
+import Testimonial from "@/components/testimonial";
+import ShowCase from "@/components/showcase";
 
 export default function Home() {
   return (
@@ -20,30 +27,45 @@ export default function Home() {
           </h1>
         </div>
         <p className="text-center relative top-3">
-        We build digital solutions that helps businesses grow
+          We build digital solutions that help businesses grow
         </p>
         <div className="flex justify-center items-center relative md:mt-[-10px]">
-          {/* <Image
-            src="/assets/preview.png"
-            alt="banner image"
-            width={1200}
-            height={1200}
-            className="rounded-tl-2xl rounded-tr-2xl border-2 border-muted"
-          /> */}
           <div className="bottom-0 top-[50%] bg-gradient-to-t dark:from-background left-0 right-0 absolute z-10" />
         </div>
       </section>
-      <section className="flex justify-center relative flex-col gap-4 md:!mt-[-40] mt-[-10px]">
-        <h2 className="text-4xl text-center">Choose what plan fits you best</h2>
+
+      {/* Hero Secondary Section */}
+      <section className="flex justify-center flex-col gap-4 md:!mt-40 mt-10">
+        <div className="text-4xl text-center">
+          <Title title="The last digital agency you'll ever need" />
+        </div>
         <p className="text-muted-foreground text-center">
           Our straight forward pricing plans are tailored to meet your needs. If
           {" you're"} not <br /> sure, you can always start with our free plan
           and upgrade later.
         </p>
-        <div className="flex justify-center gap-4 flex-wrap mt-6">
-          
+        <div className="container grid grid-cols-2 gap-4 mt-6 md:grid-cols-4">
+          {home.map((item, i) => (
+            <div className="p-6 rounded-md text-left" key={i}>
+              <span className="green text-green-500 text-4xl">{item.icon}</span>
+              <h3 className="text-xl font-bold mt-4">{item.title}</h3>
+            </div>
+          ))}
         </div>
       </section>
+
+      {/* Other Sections */}
+      <Expertise />
+      <Banner />
+      <Testimonial />
+      <ShowCase />
+      {/* 
+      <Brand /> */}
+
+      <div className="text-center py-16">
+        <Title title="Latest news & articles" />
+        <BlogCard />
+      </div>
     </>
   );
 }

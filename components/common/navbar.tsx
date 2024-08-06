@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import { CircleArrowOutUpRight, GalleryHorizontalEnd, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { ModeToggle } from "./global/mode-toggle";
-import { Button } from "./ui/button";
+import { ModeToggle } from "../global/mode-toggle";
+import { Button } from "../ui/button";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);

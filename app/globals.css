@@ -4,13 +4,15 @@
 
 html,
 body {
-  height: 100%;
+  overflow-x: hidden;
 }
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 @layer base {
@@ -20,8 +22,47 @@ body {
        URL: https://gradient.page */
 
     /* CSS: .bg-gradient { background: var(--gradient) } */
-    --gradient: #F7F8F8;
+    --gradient-start: #FE8C00;
+    --gradient-end: #F83600;
+    --text-gradient-start:#536976;
+    --text-gradient-end:#292E49;
+    --background: 216 100% 98.04%;
+    --foreground: 213.6 100% 4.9%;
+    /* --text-color: var(--foreground, #000); */
 
+    --primary: 214.12 100% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --card: 216 100% 98.04%;
+    --card-foreground: 213.6 100% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 213.6 100% 4.9%;
+
+    --secondary: 214.74 100% 92.55%;
+    --secondary-foreground: 216 100% 0.98%;
+
+    --muted: 213.6 100% 95.1%;
+    --muted-foreground: 0 0% 40%;
+
+    --accent: 213.6 100% 95.1%;
+    --accent-foreground: 214.12 100% 50%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 0 0% 90.2%;
+    --input: 0 0% 90.2%;
+    --ring: 214.12 100% 50%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --gradient-start: #536976;
+    --gradient-end: #292E49;
+    --text-gradient-start:#FE8C00;
+    --text-gradient-end:#F83600;
     --background: 191 4.550000000000001% 7.76%;
     --foreground: 191 0.7000000000000001% 99.85%;
 
@@ -50,44 +91,6 @@ body {
     --destructive-foreground: 191 0.7000000000000001% 99.85%;
 
     --ring: 191 7% 97%;
-  }
-
-  .dark {
-    --gradient: #0052D4;
-
-    --background: 230 65% 3.36%;
-    --foreground: 230 10% 97.1%;
-
-    --muted: 230 50% 12.6%;
-    --muted-foreground: 230 10% 54.2%;
-
-    --popover: 230 45% 5.46%;
-    --popover-foreground: 230 10% 97.1%;
-
-    --card: 230 45% 5.46%;
-    --card-foreground: 230 10% 97.1%;
-
-    --border: 230 50% 12.6%;
-    --input: 230 50% 12.6%;
-
-    --primary: 230 100% 42%;
-    --primary-foreground: 230 10% 97.1%;
-
-    --secondary: 230 50% 12.6%;
-    --secondary-foreground: 230 10% 97.1%;
-
-    --accent: 230 50% 12.6%;
-    --accent-foreground: 230 10% 97.1%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 230 10% 97.1%;
-
-    --ring: 230 100% 42%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
   }
 }
 
