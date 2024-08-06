@@ -26,11 +26,11 @@ body {
     --gradient-end: #F83600;
     --text-gradient-start:#536976;
     --text-gradient-end:#292E49;
-    --background: 216 100% 98.04%;
+    --background: 216, 100%, 98.04%;
     --foreground: 213.6 100% 4.9%;
     /* --text-color: var(--foreground, #000); */
 
-    --primary: 214.12 100% 50%;
+    --primary: hsl(214.12 100% 50%);
     --primary-foreground: 0 0% 100%;
 
     --card: 216 100% 98.04%;
@@ -63,10 +63,10 @@ body {
     --gradient-end: #292E49;
     --text-gradient-start:#FE8C00;
     --text-gradient-end:#F83600;
-    --background: 191 4.550000000000001% 7.76%;
+    --background: hsl(191 4.550000000000001% 7.76%);
     --foreground: 191 0.7000000000000001% 99.85%;
 
-    --muted: 191 3.5000000000000004% 29.099999999999998%;
+    --muted: hsl(191 3.5000000000000004% 29.099999999999998%);
     --muted-foreground: 191 0.7000000000000001% 59.7%;
 
     --popover: 191 63.6% 12.61%;

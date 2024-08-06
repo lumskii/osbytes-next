@@ -116,26 +116,32 @@ export const brand = [
   {
     id: 1,
     cover: "../../images/l1.svg",
+    title: "Mighty Furnitures",
   },
   {
     id: 2,
     cover: "../../images/l2.svg",
+    title: "Wall Paints Shop",
   },
   {
     id: 3,
     cover: "../../images/l3.svg",
+    title: "Bullseye",
   },
   {
     id: 4,
     cover: "../../images/l4.svg",
+    title: "Golden",
   },
   {
     id: 5,
     cover: "../../images/l5.svg",
+    title: "Ideabox",
   },
   {
     id: 6,
     cover: "../../images/l6.svg",
+    title: "Climb the mountain",
   },
 ]
 export const blogdata = [

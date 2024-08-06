@@ -15,6 +15,7 @@ import BlogCard from "@/components/blogCard";
 import Banner from "@/components/banner";
 import Testimonial from "@/components/testimonial";
 import ShowCase from "@/components/showcase";
+import Brand from "@/components/brand";
 
 export default function Home() {
   return (
@@ -59,8 +60,7 @@ export default function Home() {
       <Banner />
       <Testimonial />
       <ShowCase />
-      {/* 
-      <Brand /> */}
+      <Brand /> 
 
       <div className="text-center py-16">
         <Title title="Latest news & articles" />
