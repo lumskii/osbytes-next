@@ -7,6 +7,7 @@ import { MoveRight } from "lucide-react";
 interface CardProps {
   width?: number;
   height?: number;
+  className?: string;
   data: {
     id: number;
     title: string;
@@ -27,6 +28,7 @@ export const Card: React.FC<CardProps> = ({
   path,
   width,
   height,
+  className,
 }) => {
   return (
     <div className={caption ? "grid" : "flex flex-wrap items-start space-x-6"}>
@@ -46,7 +48,7 @@ export const Card: React.FC<CardProps> = ({
           height={height}
         />
       </div>
-      <div className={caption ? "" : "w-[55%] py-6 flex flex-col justify-center text-left"}>
+      <div className={className}>
         <Link
           href={`${path}/${data.id}`}
           className="capitalize"
@@ -63,9 +65,9 @@ export const Card: React.FC<CardProps> = ({
             {caption} <MoveRight className="ml-2" />
           </Link>
         )}
-        <div className="flex items-center text-[color:var(--muted-foreground)] mt-4">
-          <span>{data.category}</span>
-          {data.date && <span className="ml-2">/ {data.date}</span>}
+        <div className="flex items-center text-sm text-[--muted-foreground] opacity-50 mt-4">
+          <span> {data.category} </span>
+          {data.date && <span><span className="ml-1 mr-1">/</span>  {data.date}</span>}
         </div>
         {show && data.desc && (
           <ul className="mt-6 text-sm opacity-50">
