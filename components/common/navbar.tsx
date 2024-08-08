@@ -1,15 +1,23 @@
-"use client"
+"use client";
 
-import React, { useState } from "react";
-import { CircleArrowOutUpRight, GalleryHorizontalEnd, Menu, X } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { CircleArrowOutUpRight, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { ModeToggle } from "../global/mode-toggle";
 import { Button } from "../ui/button";
+import { useRouter } from "next/router";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [active, setActive] = useState<string>("");
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
+
+  // const router = useRouter();
+
+  // useEffect(() => {
+  //   setActive(router.pathname);
+  // }, [router.pathname]);
 
   return (
     <div className="p-4 flex items-center justify-between relative">
@@ -19,21 +27,38 @@ const Navbar: React.FC = () => {
       </aside>
       <nav className="hidden md:block absolute left-[50%] top-[15%] transform translate-x-[-50%] -translate-y-[-50%]">
         <ul className="flex items-center justify-center gap-8">
-          <Link href="#">Build</Link>
-          <Link href="#">Support</Link>
-          <Link href="#">Grow</Link>
+          <li>
+            <Link href="/work" className={active === "/work" ? "text-primary" : ""}>
+              Work
+            </Link>
+          </li>
+          <li>
+            <Link href="/services" className={active === "/services" ? "text-primary" : ""}>
+              Services
+            </Link>
+          </li>
+          <li>
+            <Link href="/resources" className={active === "/resources" ? "text-primary" : ""}>
+              Resources
+            </Link>
+          </li>
+          <li>
+            <Link href="/about" className={active === "/about" ? "text-primary" : ""}>
+              About
+            </Link>
+          </li>
         </ul>
       </nav>
       <aside className="flex gap-2 items-center">
         <Link
-          href="/"
-          className="bg-primary text-black p-2 px-4 rounded-md hover:bg-foreground/50 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105"
+          href="/new-project"
+          className="bg-primary text-background p-2 px-4 rounded-md hover:bg-foreground/50 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105"
         >
-          Book A Consultation
+          Start A Project
         </Link>
         <ModeToggle />
         <Button className="md:hidden p-2" onClick={toggleMenu} aria-label="Toggle menu">
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
         </Button>
       </aside>
 
@@ -42,18 +67,23 @@ const Navbar: React.FC = () => {
         <nav className="absolute top-0 left-0 w-full h-screen bg-background flex flex-col items-center justify-center md:block">
           <ul className="flex flex-col items-center gap-8 text-2xl">
             <li>
-              <Link href="#" onClick={toggleMenu}>
-                Build
+              <Link href="/work" className={active === "/work" ? "text-primary" : ""}>
+                Work
               </Link>
             </li>
             <li>
-              <Link href="#" onClick={toggleMenu}>
-                Support
+              <Link href="/services" className={active === "/services" ? "text-primary" : ""}>
+                Services
               </Link>
             </li>
             <li>
-              <Link href="#" onClick={toggleMenu}>
-                Grow
+              <Link href="/resources" className={active === "/resources" ? "text-primary" : ""}>
+                Resources
+              </Link>
+            </li>
+            <li>
+              <Link href="/about" className={active === "/about" ? "text-primary" : ""}>
+                About
               </Link>
             </li>
           </ul>

@@ -17,10 +17,10 @@ const Testimonial: React.FC = () => {
     <section className="py-16 relative">
       <div className="container mx-auto">
         <div className="text-center mb-12">
-          <Title className="text-3xl" title="WHAT CLIENTS SAY ABOUT OUR WORK" />
+          <Title className="text-3xl py-10" title="WHAT CLIENTS SAY ABOUT OUR WORK" />
         </div>
         <Carousel
-          className="w-full max-w-base mx-auto"
+          className="w-full mx-auto container"
           opts={{
             loop: true,
             align: "start",
