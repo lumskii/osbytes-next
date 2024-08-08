@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "@next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/common/navbar";
 import Footer from "@/components/common/footer";
@@ -26,11 +26,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Navbar />  {/* Make sure this is within the ThemeProvider */}
           <main className="h-full">
-            <Navbar />
             {children}
-            <Footer />
           </main>
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

@@ -11,14 +11,17 @@ const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [active, setActive] = useState<string>("");
 
+  
+  const router = useRouter();
+  
+  useEffect(() => {
+    if (router.isReady){
+      setActive(router.pathname);
+    }
+  }, [router.isReady, router.pathname]);
+  
   const toggleMenu = () => setIsOpen((prev) => !prev);
-
-  // const router = useRouter();
-
-  // useEffect(() => {
-  //   setActive(router.pathname);
-  // }, [router.pathname]);
-
+  
   return (
     <div className="p-4 flex items-center justify-between relative">
       <aside className="flex items-center gap-2 group cursor-pointer">
