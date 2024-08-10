@@ -5,28 +5,20 @@ import { CircleArrowOutUpRight, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { ModeToggle } from "../global/mode-toggle";
 import { Button } from "../ui/button";
-import { useRouter } from "next/router";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [active, setActive] = useState<string>("");
-
-  
-  const router = useRouter();
-  
-  useEffect(() => {
-    if (router.isReady){
-      setActive(router.pathname);
-    }
-  }, [router.isReady, router.pathname]);
   
   const toggleMenu = () => setIsOpen((prev) => !prev);
   
   return (
     <div className="p-4 flex items-center justify-between relative">
-      <aside className="flex items-center gap-2 group cursor-pointer">
+      <aside className="group cursor-pointer">
+        <Link href="/" className="flex items-center gap-2">
         <span className="text-xl font-bold">OSbytes</span>
         <CircleArrowOutUpRight className="group-hover:rotate-45 transition-transform duration-300" />
+        </Link>
       </aside>
       <nav className="hidden md:block absolute left-[50%] top-[15%] transform translate-x-[-50%] -translate-y-[-50%]">
         <ul className="flex items-center justify-center gap-8">
