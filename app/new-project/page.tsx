@@ -1,9 +1,15 @@
+"use client";
+
+import Scheduler from '@/components/common/form'
 import React from 'react'
 
-const Scheduler: React.FC = () => {
+const Booking = () => {
   return (
-    <div>Scheduler</div>
+    <div>
+      <h1>Schedule a Meeting</h1>
+      <Scheduler />
+    </div>
   )
 }
 
-export default Scheduler
+export default Booking
