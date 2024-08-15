@@ -129,18 +129,3 @@ body {
   }
 }
 
-/* Custom CSS for the calendar */
-.custom-calendar .datepicker-content {
-  width: 100%;
-}
-
-.custom-calendar .datepicker-cell {
-  width: 2.5rem;
-  height: 2.5rem;
-}
-
-.custom-calendar .datepicker-header {
-  font-size: 1.25rem;
-  padding: 0.5rem 1rem;
-}
-

@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "../ui/card";
 
 const Scheduler: React.FC = () => {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [timeFormat, setTimeFormat] = useState<"12h" | "24h">("12h");
   const { timezone } = useUserTimezone();
@@ -24,11 +24,17 @@ const Scheduler: React.FC = () => {
     router.push("/success");
   };
 
+  const handleConfirm = () => {
+    if (selectedDate && selectedTime) {
+      setShowForm(true);
+    }
+  };
+
   return (
-    <div className="flex space-x-4 p-6 bg-primary-foreground">
-      
-      {/* First Column - Information */}
-      <Card className="w-1/3">
+    <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 p-6 bg-primary-foreground">
+      {!showForm ? (
+        <>
+      <Card className="w-full lg:w-1/3">
         <CardHeader>
           <CardTitle className="text-lg font-bold">OSbytes Inc</CardTitle>
           <CardDescription className="font-semibold text-xl tracking-wider">Introduction Call</CardDescription>
@@ -43,8 +49,7 @@ const Scheduler: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Second Column - Calendar */}
-      <Card className="w-1/3 flex flex-col items-start">
+      <Card className="w-full lg:w-1/3">
         <CardHeader>
           <CardTitle className="text-lg font-bold">Select Date</CardTitle>
         </CardHeader>
@@ -53,13 +58,11 @@ const Scheduler: React.FC = () => {
             mode="single"
             selected={selectedDate}
             onSelect={(date) => setSelectedDate(date)}
-            className="w-full custom-calendar"
+            className="w-full"
           />
         </CardContent>
       </Card>
-
-      {/* Third Column - Time Selection */}
-      <Card className="w-1/3">
+      <Card className="w-full lg:w-1/3">
         <CardHeader>
           <CardTitle className="text-lg font-bold">Select Time</CardTitle>
         </CardHeader>
@@ -83,35 +86,45 @@ const Scheduler: React.FC = () => {
               </Button>
             ))}
           </div>
+          <div className="mt-4">
+          <Button
+            onClick={handleConfirm}
+            disabled={!selectedDate || !selectedTime}
+            className="w-full"
+          >
+            Confirm
+          </Button>
+        </div>
         </CardContent>
       </Card>
-
-      {/* Meeting Details Form */}
-      {showForm && selectedDate && (
-        <Card className="mt-4 w-full">
-          <CardHeader>
-            <CardTitle className="text-lg font-bold">Meeting Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium">Name:</label>
-                <input type="text" name="name" required className="w-full p-2 border rounded-md" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Email:</label>
-                <input type="email" name="email" required className="w-full p-2 border rounded-md" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Requirements:</label>
-                <textarea name="requirements" className="w-full p-2 border rounded-md"></textarea>
-              </div>
-              <input type="hidden" name="date" value={selectedDate.toString()} />
-              <Button type="submit" className="w-full">Schedule Meeting</Button>
-            </form>
-          </CardContent>
-        </Card>
-      )}
+      </>
+      ) : (
+            <Card className="mt-4 w-full">
+              <CardHeader>
+                <CardTitle className="text-lg font-bold">Meeting Details</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium">Name:</label>
+                    <input type="text" name="name" required className="w-full p-2 border rounded-md" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium">Email:</label>
+                    <input type="email" name="email" required className="w-full p-2 border rounded-md" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium">Requirements:</label>
+                    <textarea name="requirements" className="w-full p-2 border rounded-md"></textarea>
+                  </div>
+                  <input type="hidden" name="date" value={selectedDate?.toString() || ""} />
+                  <input type="hidden" name="time" value={selectedTime || ""} />
+                  <Button type="submit" className="w-full">Schedule Meeting</Button>
+                </form>
+              </CardContent>
+            </Card>
+        )
+      }
     </div>
   );
 };
