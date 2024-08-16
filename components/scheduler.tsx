@@ -76,7 +76,7 @@ const Scheduler: React.FC = () => {
         <CardContent>
           <div className="grid gap-4">
             {showForm ? (
-              <p className="text-sm flex gap-2 items-center">
+              <p className="text-sm font-semibold flex gap-2 items-center">
                 <CalendarIcon size={15} />
                 {formattedDate} : {selectedTime}{" "}
               </p>
@@ -151,27 +151,30 @@ const Scheduler: React.FC = () => {
               </div>
               <div className="grid gap-2 mt-4">
                 {availableTime.map((time) => (
-                  <Button
-                    key={time}
-                    onClick={() => setSelectedTime(time)}
-                    className={`${
-                      selectedTime === time
-                        ? "bg-primary text-muted-foreground"
-                        : ""
-                    } w-full mx-auto`}
-                  >
-                    {time}
-                  </Button>
+                  <div key={time} className="relative w-full flex gap-2 justify-between items-center">
+                    <Button
+                      onClick={() => setSelectedTime(time)}
+                      className={`${
+                        selectedTime === time
+                          ? "bg-primary text-muted-foreground"
+                          : ""
+                      } w-full`}
+                    >
+                      {time}
+                    </Button>
+                    {selectedTime === time && (
+                    
+                        <Button
+                          onClick={handleConfirm}
+                          disabled={!selectedDate || !selectedTime}
+                          className="w-full"
+                        >
+                          Next
+                        </Button>
+    
+                    )}
+                  </div>
                 ))}
-              </div>
-              <div className="mt-4 w-full flex justify-end">
-                <Button
-                  onClick={handleConfirm}
-                  disabled={!selectedDate || !selectedTime}
-                  className="w-auto mt-6"
-                >
-                  Next
-                </Button>
               </div>
             </CardContent>
           </Card>

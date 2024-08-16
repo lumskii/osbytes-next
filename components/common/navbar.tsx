@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { CircleArrowOutUpRight, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { ModeToggle } from "../global/mode-toggle";
 import { Button } from "../ui/button";
+import { usePathname } from "next/navigation";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [active, setActive] = useState<string>("");
+  const pathname = usePathname();
   
   const toggleMenu = () => setIsOpen((prev) => !prev);
   
@@ -47,7 +49,16 @@ const Navbar: React.FC = () => {
       <aside className="flex gap-2 items-center">
         <Link
           href="/new-project"
-          className="bg-primary text-background p-2 px-4 rounded-md hover:bg-foreground/50 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105"
+          className={`p-2 px-4 rounded-md transition duration-500 ease-in-out transform ${
+            pathname === "/new-project"
+              ? "bg-muted text-muted-foreground cursor-not-allowed"
+              : "bg-primary text-background hover:bg-foreground/50 hover:-translate-y-1 hover:scale-105"
+          }`}
+          onClick={(e) => {
+            if(pathname === "/new-project") {
+              e.preventDefault();
+            }
+          }}
         >
           Start A Project
         </Link>
