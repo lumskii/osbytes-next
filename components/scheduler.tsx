@@ -187,7 +187,7 @@ const Scheduler: React.FC = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium">Name:</label>
+                <label className="block text-sm font-medium">Your Name:</label>
                 <input
                   type="text"
                   name="name"
@@ -196,7 +196,7 @@ const Scheduler: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium">Email:</label>
+                <label className="block text-sm font-medium">Email address:</label>
                 <input
                   type="email"
                   name="email"
