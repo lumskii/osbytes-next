@@ -17,6 +17,7 @@ import {
   CardTitle,
   CardDescription,
 } from "./ui/card";
+import IntroForm from "./common/form";
 
 const Scheduler: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
@@ -151,7 +152,10 @@ const Scheduler: React.FC = () => {
               </div>
               <div className="grid gap-2 mt-4">
                 {availableTime.map((time) => (
-                  <div key={time} className="relative w-full flex gap-2 justify-between items-center">
+                  <div
+                    key={time}
+                    className="relative w-full flex gap-2 justify-between items-center"
+                  >
                     <Button
                       onClick={() => setSelectedTime(time)}
                       className={`${
@@ -163,15 +167,13 @@ const Scheduler: React.FC = () => {
                       {time}
                     </Button>
                     {selectedTime === time && (
-                    
-                        <Button
-                          onClick={handleConfirm}
-                          disabled={!selectedDate || !selectedTime}
-                          className="w-full"
-                        >
-                          Next
-                        </Button>
-    
+                      <Button
+                        onClick={handleConfirm}
+                        disabled={!selectedDate || !selectedTime}
+                        className="w-full"
+                      >
+                        Next
+                      </Button>
                     )}
                   </div>
                 ))}
@@ -185,49 +187,11 @@ const Scheduler: React.FC = () => {
             <CardTitle className="text-lg font-bold">Meeting Details</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium">Your Name:</label>
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  className="w-full p-2 border rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Email address:</label>
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  className="w-full p-2 border rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">
-                  Requirements:
-                </label>
-                <textarea
-                  name="requirements"
-                  className="w-full p-2 border rounded-md"
-                ></textarea>
-              </div>
-              <input
-                type="hidden"
-                name="date"
-                value={selectedDate?.toString() || ""}
-              />
-              <input type="hidden" name="time" value={selectedTime || ""} />
-              <div className="w-full flex gap-2 justify-end">
-                <Button type="button" className="w-auto" onClick={handleBack}>
-                  Back
-                </Button>
-                <Button type="submit" className="w-auto">
-                  Confirm
-                </Button>
-              </div>
-            </form>
+            <IntroForm
+              onClick={handleBack}
+              selectedDate={selectedDate}
+              selectedTime={selectedTime}
+            />
           </CardContent>
         </Card>
       )}
