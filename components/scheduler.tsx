@@ -182,7 +182,7 @@ const Scheduler: React.FC = () => {
           </Card>
         </>
       ) : (
-        <Card className="mt-4 w-2/3">
+        <Card className="mt-4 w-full lg:w-2/3 ">
           <CardHeader>
             <CardTitle className="text-lg font-bold">Meeting Details</CardTitle>
           </CardHeader>
