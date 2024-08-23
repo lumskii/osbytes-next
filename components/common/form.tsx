@@ -16,6 +16,7 @@ import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { stat } from "fs";
+import { CalendarEvent } from "@/lib/googleCalendarServices";
 
 interface IntroFormProps {
   onClick: () => void;
@@ -68,8 +69,29 @@ export default function IntroForm({
     },
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log("form Data:", data);
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    try {
+      const event = await CalendarEvent({
+        name: data.name,
+        description: data.description,
+        date: selectedDate,
+        time: selectedTime,
+      });
+
+      console.log('Google Calendar event created:', event);
+
+      toast({
+        title: 'Meeting Scheduled!',
+        description: 'Your meeting has been scheduled and added to your Google Calendar.',
+      });
+    } catch (error) {
+      console.error('Failed to create Google Calendar event:', error);
+
+      toast({
+        title: 'Error',
+        description: 'There was an issue scheduling the meeting.',
+      })
+    }
   };
 
   return (
