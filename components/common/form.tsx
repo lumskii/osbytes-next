@@ -14,8 +14,15 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { stat } from "fs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import MultiSelectInput from "./multiSelect";
+import { Textarea } from "../ui/textarea";
 import { CalendarEvent } from "@/lib/googleCalendarServices";
 
 interface IntroFormProps {
@@ -36,7 +43,7 @@ const formSchema = z.object({
   }),
   date: z.string().optional(),
   time: z.string().optional(),
-  serviceNeeded: z.string().optional(),
+  serviceNeeded: z.array(z.string()).optional(),
   budget: z.string().optional(),
   status: z.string().optional(),
   designStatus: z.string().optional(),
@@ -60,7 +67,7 @@ export default function IntroForm({
       companyUrl: "",
       date: selectedDate?.toString() || "",
       time: selectedTime || "",
-      serviceNeeded: "",
+      serviceNeeded: [],
       budget: "",
       status: "",
       designStatus: "",
@@ -169,19 +176,20 @@ export default function IntroForm({
           render={({ field }) => {
             return (
               <FormItem>
-                <FormLabel className="flex gap-2 capitalize">What services do you need? <span>*</span></FormLabel>
-                <Select onValueChange={field.onChange} required>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="You can select multiple"/>
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="web app solution">Web App Solution</SelectItem>
-                  <SelectItem value="website solution">Website Solution</SelectItem>
-                  <SelectItem value="seo optimization">SEO Optimization</SelectItem>
-                </SelectContent>
-                </Select>
+                <FormLabel className="flex gap-2 capitalize">
+                  What services do you need? <span>*</span>
+                </FormLabel>
+                <MultiSelectInput
+                  field={{
+                    value: field.value ?? [],
+                    onChange: field.onChange,
+                  }}
+                  options={[
+                    { value: "Web App solution", label: "Web App Solution" },
+                    { value: "Website solution", label: "Website Solution" },
+                    { value: "SEO optimization", label: "SEO Optimization" },
+                  ]}
+                />
                 <FormMessage />
               </FormItem>
             );
@@ -193,18 +201,26 @@ export default function IntroForm({
           render={({ field }) => {
             return (
               <FormItem>
-                <FormLabel className="flex gap-2 capitalize">Our budget is? <span>*</span></FormLabel>
+                <FormLabel className="flex gap-2 capitalize">
+                  Our budget is? <span>*</span>
+                </FormLabel>
                 <Select onValueChange={field.onChange} required>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="web app solution">Web App Solution</SelectItem>
-                  <SelectItem value="website solution">Website Solution</SelectItem>
-                  <SelectItem value="seo optimization">SEO Optimization</SelectItem>
-                </SelectContent>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="$500 - $1K">
+                      $500 - $1K
+                    </SelectItem>
+                    <SelectItem value="$1K - $5K">
+                      $1K - $5K
+                    </SelectItem>
+                    <SelectItem value="$5k and above...">
+                      $5K and above...
+                    </SelectItem>
+                  </SelectContent>
                 </Select>
                 <FormMessage />
               </FormItem>
@@ -213,23 +229,113 @@ export default function IntroForm({
         />
         <FormField
           control={form.control}
-          name="budget"
+          name="status"
           render={({ field }) => {
             return (
               <FormItem>
-                <FormLabel className="flex gap-2 capitalize">What services do you need? <span>*</span></FormLabel>
+                <FormLabel className="flex gap-2 capitalize">
+                Post Project Continued Assistance <span>*</span>
+                </FormLabel>
                 <Select onValueChange={field.onChange}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="You can select multiple"/>
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="web app solution">Web App Solution</SelectItem>
-                  <SelectItem value="website solution">Website Solution</SelectItem>
-                  <SelectItem value="seo optimization">SEO Optimization</SelectItem>
-                </SelectContent>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="We need ongoing support after this project">
+                      We need ongoing support after this project.
+                    </SelectItem>
+                    <SelectItem value="We do not need ongoing support after this project">
+                      We do not need ongoing support after this project.
+                    </SelectItem>
+                  </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        <FormField
+          control={form.control}
+          name="designStatus"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel className="flex gap-2 capitalize">
+                What Is Your Design Status? <span>*</span>
+                </FormLabel>
+                <Select onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="We need design">
+                      We need design
+                    </SelectItem>
+                    <SelectItem value="We have some design">
+                      We have some design
+                    </SelectItem>
+                    <SelectItem value="We have all design already">
+                      We have all design already
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        <FormField
+          control={form.control}
+          name="deadline"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel className="flex gap-2 capitalize">
+                Our deadline is? <span>*</span>
+                </FormLabel>
+                <Select onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="asap">
+                      ASAP
+                    </SelectItem>
+                    <SelectItem value="1 month">
+                      1 Month
+                    </SelectItem>
+                    <SelectItem value="1-3 months">
+                      1-3 Months
+                    </SelectItem>
+                    <SelectItem value="3-6 months">
+                      3-6 Months
+                    </SelectItem>
+                    <SelectItem value="onging collaboration">
+                      Ongoing Collaboration
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel className="flex gap-2 capitalize">
+                Project description <span>*</span>
+                </FormLabel>
+                <Textarea onChange={field.onChange} placeholder="Please share anything that will help prepare for our meeting" />
                 <FormMessage />
               </FormItem>
             );
