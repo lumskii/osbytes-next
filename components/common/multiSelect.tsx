@@ -4,6 +4,7 @@ import { FieldValues } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem } from "../ui/select";
 import { Button } from "../ui/button";
+import clsx from "clsx";
 
 interface Option {
   value: string;
@@ -22,7 +23,9 @@ export default function MultiSelectInput<TFieldValues extends FieldValues>({
   field,
   options,
 }: MultiSelectInputProps<TFieldValues>) {
-  const [selectedOptions, setSelectedOptions] = useState<string[]>(field.value || []);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(
+    field.value || []
+  );
 
   const handleSelect = (value: string) => {
     if (!selectedOptions.includes(value)) {
@@ -39,8 +42,12 @@ export default function MultiSelectInput<TFieldValues extends FieldValues>({
   };
 
   return (
-    <div>
-      <div className="flex flex-wrap items-center gap-2 mb-2">
+    <div className="flex flex-col">
+      <div
+        className={clsx("flex flex-wrap items-center gap-2", {
+          "p-3": selectedOptions.length > 0,
+        })}
+      >
         {selectedOptions.map((option) => (
           <div
             key={option}
@@ -60,8 +67,11 @@ export default function MultiSelectInput<TFieldValues extends FieldValues>({
         ))}
       </div>
       <Select onValueChange={handleSelect}>
-        <SelectTrigger>
-          <Input placeholder="Select services" />
+        <SelectTrigger className="flex-grow border-lg shadow-none p-2">
+          <Input
+            placeholder="Select services"
+            className="border-none shadow-none h-auto"
+          />
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
