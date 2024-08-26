@@ -6,7 +6,6 @@ import {
   Video,
   Calendar as CalendarIcon,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Calendar } from "./ui/calendar";
 import { Button } from "./ui/button";
@@ -25,17 +24,8 @@ const Scheduler: React.FC = () => {
   const [timeFormat, setTimeFormat] = useState<"12h" | "24h">("12h");
   const { timezone } = useUserTimezone();
   const [showForm, setShowForm] = useState<boolean>(false);
-  const router = useRouter();
 
   const availableTime = ["9:00 AM", "10:00 AM", "2:00 PM", "4:00 PM"];
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-    console.log(data);
-    router.push("/success");
-  };
 
   const handleConfirm = () => {
     if (selectedDate && selectedTime) {
@@ -64,7 +54,6 @@ const Scheduler: React.FC = () => {
     day: "numeric",
   });
 
-  // const disabledDates = [new Date("2024-08-12"), new Date("2021-09-13")];
   return (
     <div className="flex flex-col lg:flex-row space-y-1 lg:space-y-0 lg:space-x-1 p-6 bg-primary-foreground">
       <Card className="w-full lg:w-1/3">

@@ -23,7 +23,6 @@ import {
 } from "../ui/select";
 import MultiSelectInput from "./multiSelect";
 import { Textarea } from "../ui/textarea";
-import { CalendarEvent } from "@/lib/googleCalendarServices";
 
 interface IntroFormProps {
   onClick: () => void;
@@ -57,6 +56,7 @@ export default function IntroForm({
   selectedTime,
 }: IntroFormProps) {
   const { toast } = useToast();
+
   const form = useForm<z.infer<typeof formSchema>>({
     mode: "onChange",
     resolver: zodResolver(formSchema),
@@ -77,29 +77,43 @@ export default function IntroForm({
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    // Ensure that date and time are set from selected values if not already
+    const eventData = {
+      ...data,
+      date: selectedDate?.toISOString() || data.date,
+      time: selectedTime || data.time,
+    };
+  
     try {
-      const event = await CalendarEvent({
-        name: data.name,
-        description: data.description,
-        date: selectedDate,
-        time: selectedTime,
+      const response = await fetch('/api/create-event', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(eventData),
       });
-
-      console.log('Google Calendar event created:', event);
-
-      toast({
-        title: 'Meeting Scheduled!',
-        description: 'Your meeting has been scheduled and added to your Google Calendar.',
-      });
+  
+      if (response.ok) {
+        const event = await response.json();
+        console.log('Google Calendar event created:', event);
+  
+        toast({
+          title: 'Meeting Scheduled!',
+          description: 'Your meeting has been scheduled and added to your Google Calendar.',
+        });
+      } else {
+        throw new Error('Failed to create event');
+      }
     } catch (error) {
       console.error('Failed to create Google Calendar event:', error);
-
+  
       toast({
         title: 'Error',
-        description: 'There was an issue scheduling the meeting.',
-      })
+        description: 'There was an issue scheduling the meeting. Please try again later.',
+      });
     }
   };
+  
 
   return (
     <Form {...form}>
