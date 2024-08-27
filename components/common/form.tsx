@@ -77,43 +77,51 @@ export default function IntroForm({
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    // Combine the selected date and time into a single DateTime string
+    // const dateTimeString =
+    //   selectedDate && selectedTime
+    //     ? new Date(
+    //         `${selectedDate.toDateString()} ${selectedTime}`
+    //       ).toISOString()
+    //     : "";
     // Ensure that date and time are set from selected values if not already
     const eventData = {
       ...data,
       date: selectedDate?.toISOString() || data.date,
       time: selectedTime || data.time,
     };
-  
+
     try {
-      const response = await fetch('/api/create-event', {
-        method: 'POST',
+      const response = await fetch("/api/create-event", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(eventData),
       });
-  
+
       if (response.ok) {
         const event = await response.json();
-        console.log('Google Calendar event created:', event);
-  
+        console.log("Google Calendar event created:", event);
+
         toast({
-          title: 'Meeting Scheduled!',
-          description: 'Your meeting has been scheduled and added to your Google Calendar.',
+          title: "Meeting Scheduled!",
+          description:
+            "Your meeting has been scheduled and added to your Google Calendar.",
         });
       } else {
-        throw new Error('Failed to create event');
+        throw new Error("Failed to create event");
       }
     } catch (error) {
-      console.error('Failed to create Google Calendar event:', error);
-  
+      console.error("Failed to create Google Calendar event:", error);
+
       toast({
-        title: 'Error',
-        description: 'There was an issue scheduling the meeting. Please try again later.',
+        title: "Error",
+        description:
+          "There was an issue scheduling the meeting. Please try again later.",
       });
     }
   };
-  
 
   return (
     <Form {...form}>
@@ -225,12 +233,8 @@ export default function IntroForm({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="$500 - $1K">
-                      $500 - $1K
-                    </SelectItem>
-                    <SelectItem value="$1K - $5K">
-                      $1K - $5K
-                    </SelectItem>
+                    <SelectItem value="$500 - $1K">$500 - $1K</SelectItem>
+                    <SelectItem value="$1K - $5K">$1K - $5K</SelectItem>
                     <SelectItem value="$5k and above...">
                       $5K and above...
                     </SelectItem>
@@ -248,7 +252,7 @@ export default function IntroForm({
             return (
               <FormItem>
                 <FormLabel className="flex gap-2 capitalize">
-                Post Project Continued Assistance <span>*</span>
+                  Post Project Continued Assistance <span>*</span>
                 </FormLabel>
                 <Select onValueChange={field.onChange}>
                   <FormControl>
@@ -277,7 +281,7 @@ export default function IntroForm({
             return (
               <FormItem>
                 <FormLabel className="flex gap-2 capitalize">
-                What Is Your Design Status? <span>*</span>
+                  What Is Your Design Status? <span>*</span>
                 </FormLabel>
                 <Select onValueChange={field.onChange}>
                   <FormControl>
@@ -309,7 +313,7 @@ export default function IntroForm({
             return (
               <FormItem>
                 <FormLabel className="flex gap-2 capitalize">
-                Our deadline is? <span>*</span>
+                  Our deadline is? <span>*</span>
                 </FormLabel>
                 <Select onValueChange={field.onChange}>
                   <FormControl>
@@ -318,18 +322,10 @@ export default function IntroForm({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="asap">
-                      ASAP
-                    </SelectItem>
-                    <SelectItem value="1 month">
-                      1 Month
-                    </SelectItem>
-                    <SelectItem value="1-3 months">
-                      1-3 Months
-                    </SelectItem>
-                    <SelectItem value="3-6 months">
-                      3-6 Months
-                    </SelectItem>
+                    <SelectItem value="asap">ASAP</SelectItem>
+                    <SelectItem value="1 month">1 Month</SelectItem>
+                    <SelectItem value="1-3 months">1-3 Months</SelectItem>
+                    <SelectItem value="3-6 months">3-6 Months</SelectItem>
                     <SelectItem value="onging collaboration">
                       Ongoing Collaboration
                     </SelectItem>
@@ -347,9 +343,12 @@ export default function IntroForm({
             return (
               <FormItem>
                 <FormLabel className="flex gap-2 capitalize">
-                Project description <span>*</span>
+                  Project description <span>*</span>
                 </FormLabel>
-                <Textarea onChange={field.onChange} placeholder="Please share anything that will help prepare for our meeting" />
+                <Textarea
+                  onChange={field.onChange}
+                  placeholder="Please share anything that will help prepare for our meeting"
+                />
                 <FormMessage />
               </FormItem>
             );

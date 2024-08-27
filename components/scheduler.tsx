@@ -25,7 +25,9 @@ const Scheduler: React.FC = () => {
   const { timezone } = useUserTimezone();
   const [showForm, setShowForm] = useState<boolean>(false);
 
-  const availableTime = ["9:00 AM", "10:00 AM", "2:00 PM", "4:00 PM"];
+  const availableTime = timeFormat === "12h"
+    ? ["9:00 AM", "10:00 AM", "2:00 PM", "4:00 PM"]
+    : ["9:00", "10:00", "14:00", "16:00"];
 
   const handleConfirm = () => {
     if (selectedDate && selectedTime) {

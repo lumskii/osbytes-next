@@ -1,45 +1,75 @@
-import { NextRequest, NextResponse } from "next/server";
-import { google } from "googleapis";
+import getAccessToken from '@/lib/getAccessToken';
+import { google } from 'googleapis';
+import { NextResponse } from 'next/server';
+
 
 export async function POST(req: Request) {
   try {
-    // Extract JSON body from the request
     const { name, description, date, time } = await req.json();
 
-    const auth = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
-      process.env.GOOGLE_REDIRECT_URI
-    );
-    auth.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
+    const accessToken = await getAccessToken();
 
-    const calendar = google.calendar({ version: "v3", auth });
+    // Log the request body for debugging
+    console.log("Request body:", { name, description, date, time });
 
-    const eventStartTime = new Date(`${date}T${time}`);
+    // Check if all necessary data is present
+    if (!name || !description || !date || !time) {
+        return NextResponse.json(
+          { error: "Missing required fields" },
+          { status: 400 }
+        );
+      }
+
+    const auth = new google.auth.OAuth2();
+    auth.setCredentials({ access_token: accessToken });
+
+    const calendar = google.calendar({ version: 'v3', auth });
+
+    const eventStartTime = new Date(`${date}T${time}:00`);
     const eventEndTime = new Date(eventStartTime);
-    eventEndTime.setMinutes(eventEndTime.getMinutes() + 30); // Assuming 30-minute meetings
+    eventEndTime.setMinutes(eventEndTime.getMinutes() + 30);
 
     const event = {
       summary: name,
       description: description,
       start: {
         dateTime: eventStartTime.toISOString(),
-        timeZone: process.env.OWNER_TIMEZONE || "America/Phoenix",
+        timeZone: process.env.OWNER_TIMEZONE || 'America/Phoenix',
       },
       end: {
         dateTime: eventEndTime.toISOString(),
-        timeZone: process.env.OWNER_TIMEZONE || "America/Phoenix",
+        timeZone: process.env.OWNER_TIMEZONE || 'America/Phoenix',
       },
     };
 
+    // Log the event details before sending it to Google Calendar
+    console.log("Event to be created:", event);
+
     const response = await calendar.events.insert({
-      calendarId: "primary",
+      calendarId: 'primary',
       requestBody: event,
     });
 
-    return NextResponse.json({ event: response.data }, { status: 200 });
+    // Log the response from Google Calendar API
+    console.log("Google Calendar API response:", response.data);
+
+    // Check if the response data is present
+    if (!response.data) {
+        return NextResponse.json(
+          { error: "No data received from Google Calendar API" },
+          { status: 500 }
+        );
+      }
+
+    return new Response(JSON.stringify({ event: response.data }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
-    console.error("Error creating calendar event", error);
-    return NextResponse.json({ error: "Unable to create calendar event" }, { status: 500 });
+    console.error('Error creating calendar event', error);
+    return new Response(
+      JSON.stringify({ error: 'Unable to create calendar event' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 }
