@@ -77,18 +77,9 @@ export default function IntroForm({
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    // Combine the selected date and time into a single DateTime string
-    // const dateTimeString =
-    //   selectedDate && selectedTime
-    //     ? new Date(
-    //         `${selectedDate.toDateString()} ${selectedTime}`
-    //       ).toISOString()
-    //     : "";
-    // Ensure that date and time are set from selected values if not already
     const eventData = {
       ...data,
       date: selectedDate?.toISOString() || data.date,
-      time: selectedTime || data.time,
     };
 
     try {

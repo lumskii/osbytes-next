@@ -41,6 +41,20 @@ const Scheduler: React.FC = () => {
     setShowForm(false);
   };
 
+  const handleTimeSelect = (time: string) => {
+    if (selectedDate) {
+      const [hours, minutes] = time.split(/[: ]/);
+      const period = timeFormat === "12h" && time.includes("PM") ? 12 : 0;
+
+      const updatedDate = new Date(selectedDate);
+      updatedDate.setHours(parseInt(hours) + period);
+      updatedDate.setMinutes(parseInt(minutes));
+
+      setSelectedDate(updatedDate);
+      setSelectedTime(time);
+    }
+  }
+
   const formattedDate = selectedDate?.toLocaleDateString("en-US", {
     day: "numeric",
     weekday: "long",
@@ -148,7 +162,7 @@ const Scheduler: React.FC = () => {
                     className="relative w-full flex gap-2 justify-between items-center"
                   >
                     <Button
-                      onClick={() => setSelectedTime(time)}
+                      onClick={() => handleTimeSelect(time)}
                       className={`${
                         selectedTime === time
                           ? "bg-primary text-muted-foreground"
