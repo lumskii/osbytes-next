@@ -23,11 +23,13 @@ import {
 } from "../ui/select";
 import MultiSelectInput from "./multiSelect";
 import { Textarea } from "../ui/textarea";
+import { useUserTimezone } from "@/lib/providers/timezone";
 
 interface IntroFormProps {
   onClick: () => void;
   selectedDate: Date | undefined;
   selectedTime: string | null;
+  timezone: string | null;
 }
 
 const formSchema = z.object({
@@ -48,12 +50,14 @@ const formSchema = z.object({
   designStatus: z.string().optional(),
   deadline: z.string().optional(),
   description: z.string().optional(),
+  timezone: z.string().optional(),
 });
 
 export default function IntroForm({
   onClick,
   selectedDate,
   selectedTime,
+  timezone,
 }: IntroFormProps) {
   const { toast } = useToast();
 
@@ -67,6 +71,7 @@ export default function IntroForm({
       companyUrl: "",
       date: selectedDate?.toString() || "",
       time: selectedTime || "",
+      timezone: timezone || "America/Phoenix",
       serviceNeeded: [],
       budget: "",
       status: "",
@@ -80,7 +85,10 @@ export default function IntroForm({
     const eventData = {
       ...data,
       date: selectedDate?.toISOString() || data.date,
+      timeZone: timezone,
     };
+    
+    console.log('timezone:', eventData.timeZone); // Debugging
 
     try {
       const response = await fetch("/api/create-event", {
@@ -351,6 +359,7 @@ export default function IntroForm({
           value={selectedDate?.toString() || ""}
         />
         <input type="hidden" name="time" value={selectedTime || ""} />
+        <input type="hidden" name="timeZone" value={timezone || "America/Phoenix"} />
         <div className="w-full flex gap-2 justify-end">
           <Button type="button" className="w-auto" onClick={onClick}>
             Back

@@ -6,7 +6,7 @@ import {
   Video,
   Calendar as CalendarIcon,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Calendar } from "./ui/calendar";
 import { Button } from "./ui/button";
 import {
@@ -17,6 +17,12 @@ import {
   CardDescription,
 } from "./ui/card";
 import IntroForm from "./common/form";
+import {
+  businessHours,
+  fetchEventsForDate,
+  filterAndDisableTimes,
+} from "@/lib/utils";
+import { TailSpin } from "react-loader-spinner";
 
 const Scheduler: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
@@ -24,10 +30,63 @@ const Scheduler: React.FC = () => {
   const [timeFormat, setTimeFormat] = useState<"12h" | "24h">("12h");
   const { timezone } = useUserTimezone();
   const [showForm, setShowForm] = useState<boolean>(false);
+  const [availableTime, setAvailableTime] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const availableTime = timeFormat === "12h"
+  //   ? ["9:00 AM", "10:00 AM", "2:00 PM", "4:00 PM"]
+  //   : ["9:00", "10:00", "14:00", "16:00"];
 
-  const availableTime = timeFormat === "12h"
-    ? ["9:00 AM", "10:00 AM", "2:00 PM", "4:00 PM"]
-    : ["9:00", "10:00", "14:00", "16:00"];
+  useEffect(() => {
+    const initializeAvailableTimes = async () => {
+      if (selectedDate) {
+        setIsLoading(true);
+        const events = await fetchEventsForDate(selectedDate);
+        const busyTimes = filterAndDisableTimes(events, selectedDate);
+
+        const times: string[] = [];
+        const [startHour, startMinute] = businessHours.start
+          .split(":")
+          .map(Number);
+        const [endHour, endMinute] = businessHours.end.split(":").map(Number);
+
+        for (let hour = startHour; hour < endHour; hour++) {
+          for (let minute = 0; minute < 60; minute += 30) {
+            const time = new Date(selectedDate);
+            time.setHours(hour, minute, 0, 0);
+
+            const isBusy = busyTimes.some((event) => {
+              const eventStart = new Date(event.start.dateTime);
+              return (
+                eventStart.getHours() === hour &&
+                eventStart.getMinutes() === minute
+              );
+            });
+
+            if (!isBusy) {
+              const formattedTime =
+                timeFormat === "12h"
+                  ? time.toLocaleString("en-US", {
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: true,
+                    })
+                  : time.toLocaleString("en-US", {
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: false,
+                    });
+              times.push(formattedTime);
+            }
+          }
+        }
+
+        setAvailableTime(times);
+        setIsLoading(false);
+      }
+    };
+
+    initializeAvailableTimes();
+  }, [selectedDate, timeFormat]);
 
   const handleConfirm = () => {
     if (selectedDate && selectedTime) {
@@ -42,7 +101,7 @@ const Scheduler: React.FC = () => {
   };
 
   const handleTimeSelect = (time: string) => {
-    if (selectedDate) {
+    if (selectedDate && timezone) {
       const [hours, minutes] = time.split(/[: ]/);
       const period = timeFormat === "12h" && time.includes("PM") ? 12 : 0;
 
@@ -50,10 +109,16 @@ const Scheduler: React.FC = () => {
       updatedDate.setHours(parseInt(hours) + period);
       updatedDate.setMinutes(parseInt(minutes));
 
-      setSelectedDate(updatedDate);
+      const offsetDate = new Date(
+        updatedDate.toLocaleString("en-US", {
+          timeZone: timezone,
+        })
+      );
+
+      setSelectedDate(offsetDate);
       setSelectedTime(time);
     }
-  }
+  };
 
   const formattedDate = selectedDate?.toLocaleDateString("en-US", {
     day: "numeric",
@@ -155,33 +220,42 @@ const Scheduler: React.FC = () => {
                   </Button>
                 </div>
               </div>
-              <div className="grid gap-2 mt-4">
-                {availableTime.map((time) => (
-                  <div
-                    key={time}
-                    className="relative w-full flex gap-2 justify-between items-center"
-                  >
-                    <Button
-                      onClick={() => handleTimeSelect(time)}
-                      className={`${
-                        selectedTime === time
-                          ? "bg-primary text-muted-foreground"
-                          : ""
-                      } w-full`}
-                    >
-                      {time}
-                    </Button>
-                    {selectedTime === time && (
-                      <Button
-                        onClick={handleConfirm}
-                        disabled={!selectedDate || !selectedTime}
-                        className="w-full"
-                      >
-                        Next
-                      </Button>
-                    )}
+              <div className="grid gap-2 mt-4 max-h-72 overflow-y-auto">
+                {isLoading ? (
+                  <div className="flex justify-center items-center">
+                    loading <TailSpin color="#00BFFF" height={30} width={30} />
                   </div>
-                ))}
+                ) : (
+                  availableTime.map((time) => (
+                    <div
+                      key={time}
+                      className="relative w-full flex gap-2 justify-between items-center"
+                    >
+                      <Button
+                        onClick={() => {
+                          handleTimeSelect(time);
+                          !selectedDate ? alert("Please select a date") : null;
+                        }}
+                        className={`${
+                          selectedTime === time
+                            ? "bg-primary text-muted-foreground"
+                            : ""
+                        } w-full`}
+                      >
+                        {time || "Loading..."}
+                      </Button>
+                      {selectedTime === time && (
+                        <Button
+                          onClick={handleConfirm}
+                          disabled={!selectedDate || !selectedTime}
+                          className="w-full"
+                        >
+                          Next
+                        </Button>
+                      )}
+                    </div>
+                  ))
+                )}
               </div>
             </CardContent>
           </Card>
@@ -196,6 +270,7 @@ const Scheduler: React.FC = () => {
               onClick={handleBack}
               selectedDate={selectedDate}
               selectedTime={selectedTime}
+              timezone={timezone}
             />
           </CardContent>
         </Card>
