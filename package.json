@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean": "rm -rf .next"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -41,8 +42,11 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
+    "critters": "^0.0.24",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.1.8",
+    "firebase": "^10.13.2",
+    "firebase-admin": "^12.5.0",
     "googleapis": "^142.0.0",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.418.0",

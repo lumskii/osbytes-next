@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,7 +23,13 @@ import {
 } from "../ui/select";
 import MultiSelectInput from "./multiSelect";
 import { Textarea } from "../ui/textarea";
-import { useUserTimezone } from "@/lib/providers/timezone";
+import { ConfirmationComponent } from "../ConfirmationComponent";
+import { addDoc, collection } from "firebase/firestore";
+import { db, authen } from "@/lib/firebase";
+import { FirebaseError } from "firebase/app";
+import { useState } from 'react';
+import { useAuth } from '@/lib/AuthContext';
+
 
 interface IntroFormProps {
   onClick: () => void;
@@ -53,25 +59,47 @@ const formSchema = z.object({
   timezone: z.string().optional(),
 });
 
+async function addDataToFirestore(data: z.infer<typeof formSchema>) {
+  try {
+    console.log("Attempting to add data to Firestore:", data);
+    const docRef = await addDoc(collection(db, "events"), {
+      ...data,
+      createdAt: new Date(),
+    });
+    console.log("Document successfully written with ID: ", docRef.id);
+    return true;
+  } catch (error) {
+    console.error("Error adding document to Firestore:", error);
+    if (error instanceof FirebaseError) {
+      console.error("Firebase error code:", error.code);
+      console.error("Firebase error message:", error.message);
+    } else {
+      console.error("Non-Firebase error:", error);
+    }
+    console.error("Full error object:", JSON.stringify(error, null, 2));
+    return false;
+  }
+}
+
 export default function IntroForm({
   onClick,
   selectedDate,
   selectedTime,
   timezone,
 }: IntroFormProps) {
+  const { user } = useAuth();
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [submittedData, setSubmittedData] = useState({ name: "", email: "" });
 
   const form = useForm<z.infer<typeof formSchema>>({
-    mode: "onChange",
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       email: "",
       companyName: "",
       companyUrl: "",
-      date: selectedDate?.toString() || "",
-      time: selectedTime || "",
-      timezone: timezone || "America/Phoenix",
       serviceNeeded: [],
       budget: "",
       status: "",
@@ -81,50 +109,113 @@ export default function IntroForm({
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const eventData = {
-      ...data,
-      date: selectedDate?.toISOString() || data.date,
-      timeZone: timezone,
-    };
-    
-    console.log('timezone:', eventData.timeZone); // Debugging
+  useEffect(() => {
+    if (user && user.email) {
+      form.setValue("email", user.email);
+    }
+  }, [user, form]);
 
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to submit the form.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    console.log('Current user:', user);
+  
+    setIsSubmitting(true);
+  
     try {
+      const idToken = await authen.currentUser?.getIdToken();
+  
+      // Add data to Firestore
+      const firestoreSuccess = await addDataToFirestore(data);
+      if (!firestoreSuccess) {
+        throw new Error('Failed to add data to Firestore');
+      }
+  
+      // Call the API to create the event and send email
       const response = await fetch("/api/create-event", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${idToken}`,
         },
-        body: JSON.stringify(eventData),
+        body: JSON.stringify({
+          ...data,
+          date: selectedDate?.toISOString(),
+          timeZone: timezone,
+        }),
       });
-
+  
       if (response.ok) {
-        const event = await response.json();
-        console.log("Google Calendar event created:", event);
+        // Call the send-email API
+        const emailResponse = await fetch("/api/send-email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: data.name,
+            email: data.email,
+            selectedDate: selectedDate?.toLocaleDateString(),
+            selectedTime: selectedTime,
+          }),
+        });
+
+        if (!emailResponse.ok) {
+          throw new Error('Failed to send email');
+        }
 
         toast({
-          title: "Meeting Scheduled!",
-          description:
-            "Your meeting has been scheduled and added to your Google Calendar.",
+          title: "Success",
+          description: "Your project has been submitted successfully!",
         });
+        setSubmittedData({
+          name: form.getValues("name"),
+          email: user?.email || form.getValues("email"),
+        });
+        form.reset();
+        setShowConfirmation(true);
       } else {
-        throw new Error("Failed to create event");
+        throw new Error('Failed to create event');
       }
     } catch (error) {
-      console.error("Failed to create Google Calendar event:", error);
-
+      console.error('Error submitting form:', error);
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+      }
+      console.error('Full error object:', JSON.stringify(error, null, 2));
       toast({
         title: "Error",
-        description:
-          "There was an issue scheduling the meeting. Please try again later.",
+        description: "There was an error submitting your project. Please try again.",
+        variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  if (showConfirmation) {
+    return (
+      <ConfirmationComponent
+        name={submittedData.name}
+        email={submittedData.email}
+        selectedDate={selectedDate?.toLocaleDateString() || ""}
+        selectedTime={selectedTime || ""}
+      />
+    );
+  }
+
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="name"
@@ -145,19 +236,21 @@ export default function IntroForm({
         <FormField
           control={form.control}
           name="email"
-          render={({ field }) => {
-            return (
-              <FormItem>
-                <FormLabel className="flex gap-2 ">
-                  Email address <span>*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input placeholder="email" type="email" required {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex gap-2">
+                Email <span>*</span>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter your email"
+                  {...field}
+                  disabled={!!user} // Disable the input if the user is logged in
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
         <FormField
           control={form.control}
@@ -365,7 +458,7 @@ export default function IntroForm({
             Back
           </Button>
           <Button type="submit" className="w-auto">
-            Confirm
+            {isSubmitting ? "Submitting..." : "Submit"}
           </Button>
         </div>
       </form>

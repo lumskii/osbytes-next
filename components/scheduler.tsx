@@ -32,9 +32,6 @@ const Scheduler: React.FC = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const [availableTime, setAvailableTime] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const availableTime = timeFormat === "12h"
-  //   ? ["9:00 AM", "10:00 AM", "2:00 PM", "4:00 PM"]
-  //   : ["9:00", "10:00", "14:00", "16:00"];
 
   useEffect(() => {
     const initializeAvailableTimes = async () => {
@@ -135,6 +132,13 @@ const Scheduler: React.FC = () => {
     day: "numeric",
   });
 
+  // Add this function to disable past dates
+  const disablePastDates = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date < today;
+  };
+
   return (
     <div className="flex flex-col lg:flex-row space-y-1 lg:space-y-0 lg:space-x-1 p-6 bg-primary-foreground">
       <Card className="w-full lg:w-1/3">
@@ -185,7 +189,9 @@ const Scheduler: React.FC = () => {
                 selected={selectedDate}
                 onSelect={(date) => setSelectedDate(date)}
                 className="w-full"
-                disabled={{ dayOfWeek: [0, 6] }}
+                disabled={(date) => 
+                  disablePastDates(date) || [0, 6].includes(date.getDay())
+                }
               />
             </CardContent>
           </Card>
@@ -223,7 +229,8 @@ const Scheduler: React.FC = () => {
               <div className="grid gap-2 mt-4 max-h-72 overflow-y-auto">
                 {isLoading ? (
                   <div className="flex justify-center items-center">
-                    loading <TailSpin color="#00BFFF" height={30} width={30} />
+                    <TailSpin color="#00BFFF" height={20} width={20} />{"  "}
+                    <span className="text-sm font-semibold">loading...</span>
                   </div>
                 ) : (
                   availableTime.map((time) => (

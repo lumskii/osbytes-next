@@ -5,6 +5,8 @@ import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import Navbar from "../components/common/navbar";
 import Footer from "../components/common/footer";
+import { AuthProvider } from "@/lib/AuthContext";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,19 +22,24 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} h-full`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="flex flex-col min-h-screen">
-            <Navbar />
-            <main className="flex-grow">{children}</main>
-            <Footer />
-          </div>
-        </ThemeProvider>
+      <body className={inter.className}>
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <main className="flex-grow">
+                {children}
+                <Toaster />
+              </main>
+              <Footer />
+            </div>
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );
