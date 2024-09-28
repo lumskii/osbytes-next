@@ -1,16 +1,17 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
+import { User, isSignInWithEmailLink, signInWithEmailLink, signOut as firebaseSignOut } from 'firebase/auth';
 import { authen } from './firebase';
 import { useRouter } from 'next/navigation';
 
 type AuthContextType = {
   user: User | null;
   loading: boolean;
+  signOut: () => Promise<void>;
 };
 
-const AuthContext = createContext<AuthContextType>({ user: null, loading: true });
+const AuthContext = createContext<AuthContextType>({ user: null, loading: true, signOut: async () => {} });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -33,7 +34,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signInWithEmailLink(authen, email, window.location.href)
           .then(() => {
             window.localStorage.removeItem('emailForSignIn');
-            router.push('/new-project');
           })
           .catch((error) => {
             console.error('Error signing in with email link', error);
@@ -44,8 +44,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => unsubscribe();
   }, [router]);
 
+  const signOut = async () => {
+    try {
+      await firebaseSignOut(authen);
+      router.push('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, signOut }}>
       {children}
     </AuthContext.Provider>
   );

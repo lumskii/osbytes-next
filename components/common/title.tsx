@@ -16,6 +16,12 @@ type TitleProps = {
   className?: string;
 };
 
+type SubTitleProps = {
+  title: string;
+  className?: string;
+  caption: string;
+};
+
 export const TitleLogo: React.FC<TitleLogoProps> = ({
   title,
   caption,
@@ -35,4 +41,13 @@ export const TitleSm: React.FC<TitleSmProps> = ({ title }) => {
 
 export const Title: React.FC<TitleProps> = ({ title, className }) => {
   return <h2 className={`${className} text-4xl font-semilight`}>{title}</h2>;
+};
+
+export const SubTitle: React.FC<SubTitleProps> = ({ title, className, caption }) => {
+  return (
+    <div className="grid">
+      <h3 className={`${className} text-xl font-semilight`}>{title}</h3>
+      <p className={`text-muted-foreground mt-2 max-w-[300px]`}>{caption}</p>
+    </div>
+  );
 };
