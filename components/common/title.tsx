@@ -36,7 +36,7 @@ export const TitleLogo: React.FC<TitleLogoProps> = ({
 };
 
 export const TitleSm: React.FC<TitleSmProps> = ({ title }) => {
-  return <h3 className="w-full text-2xl font-medium tracking-wide transition duration-500 hover:text-green-500">{title}</h3>;
+  return <h3 className="mt-4 text-center max-w-[350px] mx-auto text-xl font-medium tracking-wide transition duration-500 hover:text-green-500">{title}</h3>;
 };
 
 export const Title: React.FC<TitleProps> = ({ title, className }) => {

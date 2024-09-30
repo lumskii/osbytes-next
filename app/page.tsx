@@ -1,17 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { CircleArrowOutUpRight } from "lucide-react";
 import { SubTitle, Title } from "@/components/common/title";
-import { home } from "@/public/assets/data/dummydata";
+import { home, steps } from "@/public/assets/data/dummydata";
 import Expertise from "@/components/expertise";
 import BlogCard from "@/components/blogCard";
 import Banner from "@/components/banner";
@@ -34,7 +25,7 @@ export default function Home() {
     if (!user) {
       setIsLoginModalOpen(true);
     } else {
-      router.push("/project");
+      router.push("/new-project");
     }
   };
 
@@ -43,7 +34,11 @@ export default function Home() {
   };
 
   const login = () => {
-    setIsLoginModalOpen(true);
+    if (!user) {
+      setIsLoginModalOpen(true);
+    } else {
+      router.push("/new-project");
+    }
   };
 
   return (
@@ -59,15 +54,20 @@ export default function Home() {
           Elevate Your Online Presence with Expert Solutions
         </h2>
         <p className="text-muted-foreground text-center mt-4 max-w-2xl mx-auto">
-        At our agency, we specialize in transforming your web vision into reality. From design to
-        development, we ensure your website stands out and performs at its best.
+          At our agency, we specialize in transforming your web vision into
+          reality. From design to development, we ensure your website stands out
+          and performs at its best.
         </p>
         <div className="flex gap-4 mt-5 z-50">
           <Button
             className="bg-primary hover:bg-primary/90"
             onClick={handleStartProject}
-          >Get Started</Button>
-          <Button variant="outline" onClick={handleLearnMore}>Learn More</Button>
+          >
+            Get Started
+          </Button>
+          <Button variant="outline" onClick={handleLearnMore}>
+            Learn More
+          </Button>
         </div>
         {/* Add video promo here later... */}
         <div className="flex justify-center items-center relative md:mt-[-10px]">
@@ -76,30 +76,41 @@ export default function Home() {
       </section>
 
       {/* Hero Secondary Section */}
-      <section className="flex flex-col md:flex-row justify-between items-center mx-10 gap-10 min-h-[600px]">
+      <section className="flex flex-col md:flex-row justify-between items-center md:!mt-40 mt-10 mx-10 gap-10 min-h-[600px]">
         <div className="text-left max-w-xl flex-1">
           <p className="text-muted-foreground mb-5">Schedule</p>
           <div className="max-w-[350px]">
             <Title title="Effortless Meeting Scheduling for Your Convenience" />
           </div>
           <p className="text-muted-foreground mt-4">
-          Our intuitive scheduling system makes booking a meeting with our web development team a breeze. 
-          Enjoy seamless coordination without worrying about time zone differences.
+            Our intuitive scheduling system makes booking a meeting with our web
+            development team a breeze. Enjoy seamless coordination without
+            worrying about time zone differences.
           </p>
           <div className="mt-6 flex gap-6 md:flex-row flex-col max-w-lg">
-            <SubTitle title="Easy Booking" caption="Choose your preferred date and time effortlessly." />
-            <SubTitle title="Tailored Services" caption="Select from a variety of web development services to meet your needs." />
+            <SubTitle
+              title="Easy Booking"
+              caption="Choose your preferred date and time effortlessly."
+            />
+            <SubTitle
+              title="Tailored Services"
+              caption="Select from a variety of web development services to meet your needs."
+            />
           </div>
-          <div className="mt-6 flex gap-6">
-            <Button variant="outline" onClick={handleLearnMore}>Learn More</Button>
-            <Button className="bg-primary hover:bg-primary/90" onClick={login}>Sign Up</Button>
+          <div className="mt-6 flex gap-3">
+            <Button variant="outline" onClick={handleLearnMore}>
+              Learn More
+            </Button>
+            <Button className="bg-primary hover:bg-primary/90" onClick={login}>
+              Sign Up
+            </Button>
           </div>
         </div>
         <div className="w-full h-full flex-1 relative aspect-square max-w-[500px] group">
           <div className="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-300 group-hover:opacity-0 z-10 rounded-lg"></div>
-          <Image 
-            src={schedule} 
-            alt="schedule a meeting" 
+          <Image
+            src={schedule}
+            alt="schedule a meeting"
             fill
             style={{ objectFit: "cover" }}
             priority
@@ -108,23 +119,37 @@ export default function Home() {
         </div>
       </section>
 
-
-      <section className="flex justify-center flex-col gap-4 md:!mt-40 mt-10">
-        <div className="text-4xl text-center">
-          <Title title="The last digital agency you'll ever need" />
-        </div>
-        <p className="text-muted-foreground text-center">
-          Our straight forward pricing plans are tailored to meet your needs. If
-          {" you're"} not <br /> sure, you can always start with our free plan
-          and upgrade later.
-        </p>
-        <div className="container grid grid-cols-2 gap-4 mt-6 md:grid-cols-4">
-          {home.map((item, i) => (
-            <div className="p-6 rounded-md text-left" key={i}>
-              <span className="green text-green-500 text-4xl">{item.icon}</span>
-              <h3 className="text-xl font-bold mt-4">{item.title}</h3>
+      <section className="mx-10 md:!mt-40 mt-10">
+        <div className="text-left">
+          <p className="text-muted-foreground mb-5">Simple</p>
+          <div className="max-w-[550px]">
+            <Title title="Easily Schedule Your Development Meeting Today" />
+          </div>
+          <p className="text-muted-foreground mt-4 max-w-3xl">
+            Scheduling a meeting with our web development team is
+            straightforward and convenient. Follow our simple steps to connect
+            with us at your preferred time.
+          </p>
+          <div className="mt-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {steps.map((item, i) => (
+                <div
+                  className="p-6 rounded-md text-left bg-secondary/10"
+                  key={i}
+                >
+                  <span className="green text-green-500 text-4xl">
+                    {item.icon}
+                  </span>
+                  <h3 className="text-xl font-bold mt-4 capitalize max-w-[250px]">{item.title}</h3>
+                  <p className="text-muted-foreground mt-2">{item.desc}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+          <div className="mt-8 flex gap-3">
+            <Button className="bg-primary hover:bg-primary/90" onClick={login}>Schedule</Button>
+            <Button variant="outline" onClick={handleLearnMore}>Learn More</Button>
+          </div>
         </div>
       </section>
 
@@ -133,7 +158,7 @@ export default function Home() {
       <Banner />
       <Testimonial />
       <ShowCase />
-      <Brand /> 
+      <Brand />
 
       <div className="text-center py-16">
         <Title title="Latest news & articles" />
