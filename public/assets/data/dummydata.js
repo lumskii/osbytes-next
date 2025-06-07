@@ -1,4 +1,4 @@
-import { AppWindow, Calendar, PencilRuler, User } from "lucide-react"
+import { AppWindow, Calendar, HandPlatter, PencilRuler, User, CheckCheck } from "lucide-react"
 
 export const home = [
   {
@@ -17,6 +17,23 @@ export const home = [
     icon: <User size={25} />,
     title: "Customer satisfaction is our top priority",
   },
+]
+export const steps = [
+  {
+    icon: <Calendar size={25} />,
+    title: "Select your preferred date and time",
+    desc: "Choose an availabel time slot that fits your schedule."
+  },
+  {
+    icon: <HandPlatter size={25} />,
+    title: "Choose the services you Need",
+    desc: "Select from our comprehensive range of web development services."
+  },
+  {
+    icon: <CheckCheck size={25} />,
+    title: "Receive confirmation and calendar invite",
+    desc: "Review and confirm the details of your meeting with our team."
+  }
 ]
 export const expertise = [
   {
@@ -42,6 +59,26 @@ export const expertise = [
     title: "Branding & Creative Services",
     cover: "/images/e4.jpg",
     desc: [{ text: "Visual identity" }, { text: "Branding for social media" }, { text: "Custom illustrations" }],
+  },
+]
+export const newExpertise = [
+  {
+    id: 1,
+    title: "Transform Your Online Presence with Our Expert Solutions",
+    cover: "/images/e1.jpg",
+    desc: "From design to maintenance, we offer a full suite of services.",
+  },
+  {
+    id: 2,
+    title: "Custom Web Applications Designed to Meet Your Unique Business Challenges",
+    cover: "/images/e2.jpg",
+    desc: "Get tailored applications that enhance functionality and user experience.",
+  },
+  {
+    id: 3,
+    title: "Reliable Website Maintenance & Support for Seamless Operation",
+    cover: "/images/e3.jpg",
+    desc: "Ensure your website runs smoothly with our ongoing support services.",
   },
 ]
 export const testimonial = [
