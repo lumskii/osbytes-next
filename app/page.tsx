@@ -1,15 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { CircleArrowOutUpRight } from "lucide-react";
 import { SubTitle, Title } from "@/components/common/title";
 import { home } from "@/public/assets/data/dummydata";
 import Expertise from "@/components/expertise";
